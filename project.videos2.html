@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Videos</title>
+
+    <style>
+         body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+          background-image: url(image/vid1.webp);
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
+            display: flex;
+          
+            min-height: 100vh;
+            flex-direction: column; 
+        }
+
+        /* Style for the filter form */
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #fff; /* White background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light box shadow */
+        }
+
+        label {
+            color: #333; /* Dark gray text color */
+            font-size: 16px;
+        }
+
+        select, button {
+            padding: 10px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-left: 8px;
+            background-color: #4caf50; /* Green button */
+            color: #fff; /* White text color */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            justify-content: center;
+            text-align: center;
+            display: none; /* Initially hide the container */
+        }
+
+        .video-card {
+            border: 2px solid #2196F3; /* Blue border */
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            display: block; /* Initially display all cards */
+            background-color: #E3F2FD; /* Light blue background */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light box shadow */
+        }
+
+        .video-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2196F3; /* Blue text color */
+        }
+
+        .video-details {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .video-icon {
+            font-size: 40px;
+            color: #2196F3; /* Blue video icon color */
+            margin-bottom: 10px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        .error-message {
+            color: #f44336; /* Red text color */
+            font-size: 18px;
+            margin-top: 20px;
+            display: none; /* Initially hide the error message */
+        }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            select, button {
+                width: 100%;
+                margin: 8px 0;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .video-card {
+                width: calc(100% - 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <form id="filterForm">
+        <label for="faculty">Faculty:</label>
+        <select id="faculty" name="faculty" onchange="updateDepartments()">
+            <option value="">All</option>
+            <option value="Science">Science</option>
+            <option value="Humanities">Humanities</option>
+            <option value="Law">Law</option>
+            <option value="Education">Education</option>
+            <option value="Enviromental Sciences">Enviromental Sciences</option>
+            <option value="School of Nursing">School of Nursing</option>
+            <option value="Business">Business</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <label for="department">Department:</label>
+        <select id="department" name="department">
+            <option value="">All</option>
+            <!-- Departments will be dynamically populated based on the selected faculty -->
+        </select>
+
+        <label for="year">Year:</label>
+        <select id="year" name="year">
+            <option value="">All</option>
+            <option value="1.1">1.1</option>
+            <option value="1.2">1.2</option>
+            <option value="2.1">2.1</option>
+            <option value="2.2">2.2</option>
+            
+            <option value="3.1">3.1</option>
+            <option value="3.2">3.2</option>
+            <option value="4.1">4.1</option>
+            <option value="4.2">4.2</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <button type="button" onclick="applyFilters()">Watch Videos</button>
+    </form>
+
+    <div class="error-message" id="errorMessage">No videos found for your selection</div>
+
+    <div class="container" id="videoContainer">
+
+        <!-- Example Video Cards -->
+        <div class="video-card" data-faculty="Science" data-department="Computer Science" data-year="3.1">
+            <div class="video-icon">▶️</div>
+            <div class="video-title"></div>
+            <div class="video-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 3.1</p>
+                <p>Topic: Java</p>
+                <p> BY Lecturer: Muthegi</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <div class="video-card" data-faculty="Science" data-department="Computer Science" data-year="2.1">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">Introduction to Statistics</div>
+            <div class="video-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 2.1</p>
+                <p>Topic: Introduction to statistics</p>
+                <p>By Teddy</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <div class="video-card" data-faculty="Science" data-department="Computer Science" data-year="3.1">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">Introduction to Html</div>
+            <div class="video-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 3.1</p>
+                <p>Topic: Introduction To HTML</p>
+                <p> BY Lecturer: Muthegi</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+
+        <div class="video-card" data-faculty="Science" data-department="Computer Science" data-year="3.1">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">Sop and Pos</div>
+            <div class="video-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 3.1</p>
+                <p>Topic: Sop and Pos</p>
+                <p>Done by:Lecturer Gogo</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <div class="video-card" data-faculty="Science" data-department="Computer Science" data-year="2.1">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">C++</div>
+            <div class="video-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 2.1</p>
+                <p>Topic: c programming</p>
+                <p>Done by:Lecturer Edna</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        <div class="video-card" data-faculty="Science" data-department="Computer Science" data-year="2.1">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">Probability And Statistics</div>
+            <div class="video-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 2.1</p>
+                <p>Topic: Moment generating Functions</p>
+                <p>Done by:Teddy</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <div class="video-card" data-faculty="Science" data-department="Computer Science" data-year="2.2">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">UNIX programming</div>
+            <div class="video-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 2.2</p>
+                <p>Topic: Introduction to Unix</p>
+                <p>Done by:Lecturer Muthegi</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <div class="video-card" data-faculty="Law" data-department="Law" data-year="3.2">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">Court 1</div>
+            <div class="video-details">
+                <p>Faculty: Law</p>
+                <p>Department: Law</p> 
+                <p>Year of Study: 3.2</p>
+                <p>Topic: Court 1</p>
+                <p>Done by:Lecturer Okumu</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <div class="video-card" data-faculty="Science" data-department="Computer Science" data-year="1.1">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">Philosphy</div>
+            <div class="video-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science/p>
+                <p>Year of Study: 1.1</p>
+                <p>Topic: Ancient Civilizations</p>
+                <p>Done by:Cigar</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <div class="video-card" data-faculty="Science" data-department="Computer Science" data-year="2.1">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">Physics Lecture</div>
+            <div class="video-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 2.1</p>
+                <p>Topic: Laws of Motion</p>
+                <p>Done by:Lecturer Mwathi</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        <div class="video-card" data-faculty="Humanities" data-department="History" data-year="1.2">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">World History Documentary</div>
+            <div class="video-details">
+                <p>Faculty: Humanities</p>
+                <p>Department: History</p>
+                <p>Year of Study: 1.2</p>
+                <p>Topic: Ancient Civilizations</p>
+                <p>Done by:Lecturer Okumu</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <div class="video-card" data-faculty="Science" data-department="Computer Science" data-year="3.1">
+            <div class="video-icon">▶️</div>
+            <div class="video-title">Research methods in Computer Science</div>
+            <div class="video-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 3.1</p>
+                <p>Topic: Research methods in computer Science</p>
+                <p>Done by:Madam Edna</p>
+            </div>
+            <div class="video-container">
+                <video class="video" controls>
+                    <source src="videos/How to rename a file in git.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+
+        <!-- Add more Video cards as needed -->
+
+    </div>
+
+    <script>
+        // Mapping between faculties and their corresponding departments
+        const facultyDepartments = {
+            'Science': ['Computer Science', 'IT', 'Electrical', 'Mechanical'],
+            'Humanities': ['Criminology', 'Environment', 'Sociology', 'History'],
+            // Add more faculties and their departments as needed
+        };
+
+        function updateDepartments() {
+            const facultySelect = document.getElementById('faculty');
+            const departmentSelect = document.getElementById('department');
+
+            // Get the selected faculty
+            const selectedFaculty = facultySelect.value;
+
+            // Clear existing options in the department select
+            departmentSelect.innerHTML = '<option value="">All</option>';
+
+            // Populate department options based on the selected faculty
+            if (selectedFaculty in facultyDepartments) {
+                facultyDepartments[selectedFaculty].forEach(department => {
+                    const option = document.createElement('option');
+                    option.value = department;
+                    option.textContent = department;
+                    departmentSelect.appendChild(option);
+                });
+            }
+        }
+
+        function applyFilters() {
+            // Get selected values from the form
+            const faculty = document.getElementById('faculty').value;
+            const department = document.getElementById('department').value;
+            const year = document.getElementById('year').value;
+
+            // Get the container for Video cards
+            const videoContainer = document.getElementById('videoContainer');
+
+            // Get the error message element
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Get all Video cards
+            const videoCards = videoContainer.querySelectorAll('.video-card');
+
+            // Show or hide the container based on the filter criteria
+            videoContainer.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            // Iterate through each Video card and check if it matches the selected filters
+            videoCards.forEach(card => {
+                const cardFaculty = card.getAttribute('data-faculty');
+                const cardDepartment = card.getAttribute('data-department');
+                const cardYear = card.getAttribute('data-year');
+
+                // Check if the card matches the selected filters
+                const facultyMatch = faculty === '' || faculty === cardFaculty;
+                const departmentMatch = department === '' || department === cardDepartment;
+                const yearMatch = year === '' || year === cardYear;
+
+                // Display or hide the container based on the filter criteria
+                if (facultyMatch && departmentMatch && yearMatch) {
+                    videoContainer.style.display = 'flex';
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show the error message if no cards match the filters
+            if (videoContainer.style.display === 'none') {
+                errorMessage.style.display = 'block';
+            }
+        }
+    </script>
+
+</body>
+</html>

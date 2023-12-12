@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Notes</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+          background-image: url(image/back5.avif);
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            flex-direction: column; /* Updated to column layout */
+        }
+
+        /* Style for the filter form */
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label{
+            color: yellow;
+            font-weight: bold;
+            font-size: 23px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            justify-content: center;
+            text-align: center;
+            display: none; /* Initially hide the container */
+        }
+
+        .pdf-card {
+            border: 2px solid blueviolet;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            display: block; /* Initially display all cards */
+            background-color: #fff;
+            opacity: .7;
+        }
+
+        .pdf-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .pdf-details {
+            font-size: 16px;
+            color: black;
+            margin-bottom: 10px;
+           
+        }
+
+        .pdf-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .pdf-button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .pdf-button:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 18px;
+            margin-top: 20px;
+            display: none; /* Initially hide the error message */
+        }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            select, button {
+                width: 90%;
+                margin: 10px 10px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .pdf-card {
+                width: calc(100% - 20px);
+                
+            }
+            .fuculty{
+                margin-top:20px;
+            }
+        }
+        header{
+            position: absolute;
+            top: 0;
+            color: #fff;
+           width: 100%;
+          
+           margin-top: 10px;
+           display: flex;
+           justify-content: space-evenly;
+        }
+        header img{
+            width: 40%;
+            height: 100px;
+        }
+        header p{
+            margin-top: 30px;
+            color:ghostwhite;
+            font-size: 20px;
+        }
+        footer{
+            position: fixed;
+            bottom: 0;
+            text-align: center;
+            margin-top: 100px;
+        }
+        .container{
+            margin-top: 10px;
+        }
+        #filterForm{
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+
+      
+        <h1>Chuka OpenAI</h1>
+
+    </header>
+   
+        
+    <form id="filterForm">
+        <label for="faculty" class="faculty">Faculty:</label>
+        <select id="faculty" name="faculty" onchange="updateDepartments()">
+            <option value="">All</option>
+            <option value="Science">Science</option>
+            <option value="Humanities">Humanities</option>
+            <option value="Law">Law</option>
+            <option value="Education">Education</option>
+            <option value="Enviromental Sciences">Enviromental Sciences</option>
+            <option value="School of Nursing">School of Nursing</option>
+            <option value="Business">Business</option>
+        
+            <!-- Add more options as needed -->
+        </select>
+
+        <label for="department">Department:</label>
+        <select id="department" name="department">
+            <option value="">All</option>
+            <!-- Departments will be dynamically populated based on the selected faculty -->
+        </select>
+
+        <label for="year">Year:</label>
+        <select id="year" name="year">
+            <option value="">All</option>
+            <option value="1.1">1.1</option>
+            <option value="1.2">1.2</option>
+            <option value="2.1">2.1</option>
+            <option value="2.2">2.2</option>
+            <option value="3.1">3.1</option>
+            <option value="3.2">3.2</option>
+            <option value="4.1">4.1</option>
+            <option value="4.2">4.2</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <button type="button" onclick="applyFilters()">Get Notes</button>
+    </form>
+
+    </div>
+
+
+    <div class="error-message" id="errorMessage">No PDFs found for your selection</div>
+
+    <div class="container" id="pdfContainer">
+
+        <!-- Example PDF Cards -->
+        <div class="pdf-card" data-faculty="Science" data-department="Computer Science" data-year="3.1">
+            <div class="pdf-title">Web Design</div>
+            <div class="pdf-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 3.1</p>
+                <p>cosc 326: Introduction To Html</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view1.pdf">View</a>
+                <a class="pdf-button" href="path/to/download1.pdf" download>Download</a>
+            </div>
+        </div>
+        <div class="pdf-card" data-faculty="Science" data-department="Computer Science" data-year="3.1">
+            <div class="pdf-title">Software Design</div>
+            <div class="pdf-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 3.1</p>
+                <p>cosc 332: Software Design</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view1.pdf">View</a>
+                <a class="pdf-button" href="path/to/download1.pdf" download>Download</a>
+            </div>
+        </div>
+        <div class="pdf-card" data-faculty="Science" data-department="Computer Science" data-year="1.1">
+            <div class="pdf-title">Communication</div>
+            <div class="pdf-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 1.1</p>
+                <p>COMS 101: Communication</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view1.pdf">View</a>
+                <a class="pdf-button" href="path/to/download1.pdf" download>Download</a>
+            </div>
+        </div>
+        <div class="pdf-card" data-faculty="Science" data-department="Computer Science" data-year="1.1">
+            <div class="pdf-title">HIV&AIDS</div>
+            <div class="pdf-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 1.1</p>
+                <p>Unit: ZOOL 143</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view1.pdf">View</a>
+                <a class="pdf-button" href="path/to/download1.pdf" download>Download</a>
+            </div>
+        </div>
+        <div class="pdf-card" data-faculty="Science" data-department="Computer Science" data-year="1.2">
+            <div class="pdf-title">STATITISTICS</div>
+            <div class="pdf-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 1.2</p>
+                <p>MATH 142: Introduction to statistics</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view1.pdf">View</a>
+                <a class="pdf-button" href="path/to/download1.pdf" download>Download</a>
+            </div>
+        </div>
+
+        <div class="pdf-card" data-faculty="Science" data-department="Computer Science" data-year="1.2">
+            <div class="pdf-title">Economics</div>
+            <div class="pdf-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 1.2</p>
+                <p>Unit: ECON 100</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view1.pdf">View</a>
+                <a class="pdf-button" href="path/to/download1.pdf" download>Download</a>
+            </div>
+        </div>
+
+        <div class="pdf-card" data-faculty="Science" data-department="Computer Science" data-year="2.1">
+            <div class="pdf-title">Operating System</div>
+            <div class="pdf-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 2.1</p>
+                <p>COSC 222: Operating System </p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view1.pdf">View</a>
+                <a class="pdf-button" href="path/to/download1.pdf" download>Download</a>
+            </div>
+        </div>
+
+        <div class="pdf-card" data-faculty="Humanities" data-department="Sociology" data-year="1.2">
+            <div class="pdf-title">Introduction to Sociology</div>
+            <div class="pdf-details">
+                <p>Faculty: Humanities</p>
+                <p>Department: Sociology</p>
+                <p>Year of Study: 1.2</p>
+                <p>Unit: Sociological Theories</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view3.pdf">View</a>
+                <a class="pdf-button" href="path/to/download3.pdf" download>Download</a>
+            </div>
+        </div>
+
+        <div class="pdf-card" data-faculty="Humanities" data-department="Criminology" data-year="1.2">
+            <div class="pdf-title">Investigation</div>
+            <div class="pdf-details">
+                <p>Faculty: Humanities</p>
+                <p>Department: Criminology</p>
+                <p>Year of Study: 1.2</p>
+                <p>Unit: Investigation</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view3.pdf">View</a>
+                <a class="pdf-button" href="path/to/download3.pdf" download>Download</a>
+            </div>
+        </div>
+
+        <div class="pdf-card" data-faculty="Law" data-department="Law" data-year="1.2">
+            <div class="pdf-title">Constitution</div>
+            <div class="pdf-details">
+                <p>Faculty: Law</p>
+                <p>Department: Law</p>
+                <p>Year of Study: 1.2</p>
+                <p>Unit: Constitution</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view3.pdf">View</a>
+                <a class="pdf-button" href="path/to/download3.pdf" download>Download</a>
+            </div>
+        </div>
+        <div class="pdf-card" data-faculty="Law" data-department="Law" data-year="2.2">
+            <div class="pdf-title">Court1</div>
+            <div class="pdf-details">
+                <p>Faculty: Law</p>
+                <p>Department: Law</p>
+                <p>Year of Study: 2.2</p>
+                <p>Unit: Court 1</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view3.pdf">View</a>
+                <a class="pdf-button" href="path/to/download3.pdf" download>Download</a>
+            </div>
+        </div>
+
+
+     <!-- Add more PDF cards as needed -->
+
+    </div>
+
+    
+
+    <script>
+        // Mapping between faculties and their corresponding departments
+        const facultyDepartments = {
+            'Science': ['Computer Science', 'IT', 'Electrical', 'Mechanical'],
+            'Law': ['Law'],
+            'Humanities': ['Criminology', 'Environment', 'Sociology']
+         
+            // Add more faculties and their departments as needed
+        };
+
+        function updateDepartments() {
+            const facultySelect = document.getElementById('faculty');
+            const departmentSelect = document.getElementById('department');
+
+            // Get the selected faculty
+            const selectedFaculty = facultySelect.value;
+
+            // Clear existing options in the department select
+            departmentSelect.innerHTML = '<option value="">All</option>';
+
+            // Populate department options based on the selected faculty
+            if (selectedFaculty in facultyDepartments) {
+                facultyDepartments[selectedFaculty].forEach(department => {
+                    const option = document.createElement('option');
+                    option.value = department;
+                    option.textContent = department;
+                    departmentSelect.appendChild(option);
+                });
+            }
+        }
+
+        function applyFilters() {
+            // Get selected values from the form
+            const faculty = document.getElementById('faculty').value;
+            const department = document.getElementById('department').value;
+            const year = document.getElementById('year').value;
+
+            // Get the container for PDF cards
+            const pdfContainer = document.getElementById('pdfContainer');
+
+            // Get the error message element
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Get all PDF cards
+            const pdfCards = pdfContainer.querySelectorAll('.pdf-card');
+
+            // Show or hide the container based on the filter criteria
+            pdfContainer.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            // Iterate through each PDF card and check if it matches the selected filters
+            pdfCards.forEach(card => {
+                const cardFaculty = card.getAttribute('data-faculty');
+                const cardDepartment = card.getAttribute('data-department');
+                const cardYear = card.getAttribute('data-year');
+
+                // Check if the card matches the selected filters
+                const facultyMatch = faculty === '' || faculty === cardFaculty;
+                const departmentMatch = department === '' || department === cardDepartment;
+                const yearMatch = year === '' || year === cardYear;
+
+                // Display or hide the container based on the filter criteria
+                if (facultyMatch && departmentMatch && yearMatch) {
+                    pdfContainer.style.display = 'flex';
+                    card.style.display = 'block';
+                  
+                    
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show the error message if no cards match the filters
+            if (pdfContainer.style.display === 'none') {
+                errorMessage.style.display = 'block';
+            }
+        }
+    </script>
+
+</body>
+</html>

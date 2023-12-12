@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuka Hub Uni - Sign Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            background-image: url(image/chuka\ image.jpg);
+            background-position: top;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .signup-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%; /* Adjust the width as needed */
+            max-width: 400px; /* Set a maximum width for larger screens */
+            text-align: center;
+        }
+
+        .signup-container h2 {
+            margin-bottom: 20px;
+            color: #333333;
+        }
+
+        .signup-container label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555555;
+        }
+
+        .signup-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .signup-container button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .signup-container .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .signup-container .signup-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .signup-container a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <form id="signupForm">
+            <h2>Sign Up</h2>
+            <label for="regNo">Registration Number:</label>
+            <input type="text" id="regNo" placeholder="eb1/12345/00" name="regNo" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="button" onclick="signup()">Sign Up</button>
+            <p class="error" id="signupError"></p>
+
+            <p class="signup-link">Already have an account? <a href="project2.html">Login</a></p>
+        </form>
+    </div>
+
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Validate and sanitize input (you should do more extensive validation)
+    if (empty($username) || empty($password)) {
+        echo "Please enter both username and password.";
+        exit;
+    }
+
+    // Save the username and hashed password to a text file
+    $data = $username . ':' . password_hash($password, PASSWORD_BCRYPT) . PHP_EOL;
+    file_put_contents('users.txt', $data, FILE_APPEND | LOCK_EX);
+
+    echo "Registration successful!";
+}
+?>
+
+
+    <script>
+        function signup() {
+            var regNo = document.getElementById('regNo').value;
+            var password = document.getElementById('password').value;
+
+            var signupError = document.getElementById('signupError');
+
+            // Check if fields are empty
+            if (!regNo || !password) {
+                signupError.textContent = 'Please enter registration number and password.';
+                return;
+            }
+
+            // Check if the user already exists in localStorage
+            if (localStorage.getItem(regNo)) {
+                signupError.textContent = 'Registration number already exists. Please choose a different one.';
+                return;
+            }
+
+            // Store signup details in localStorage
+            localStorage.setItem(regNo, password);
+
+            // Redirect to login page on successful signup
+            window.location.href = 'game.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!-- filtered-pdfs.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtered PDFs</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .pdf-card {
+            border: 2px solid blueviolet;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            display: block; /* Initially display all cards */
+        }
+
+        .pdf-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .pdf-details {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .pdf-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .pdf-button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .pdf-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Display filtered PDFs here -->
+        <!-- Example PDF Cards -->
+        <div class="pdf-card" data-faculty="Science" data-department="Computer Science" data-year="2">
+            <div class="pdf-title">Mathematics</div>
+            <div class="pdf-details">
+                <p>Faculty: Science</p>
+                <p>Department: Computer Science</p>
+                <p>Year of Study: 2</p>
+                <p>Unit: Calculus</p>
+            </div>
+            <div class="pdf-buttons">
+                <a class="pdf-button" href="path/to/view1.pdf">View</a>
+                <a class="pdf-button" href="path/to/download1.pdf" download>Download</a>
+            </div>
+        </div>
+        <!-- Add more PDF cards as needed -->
+    </div>
+
+    <script src="filter.script2.js"></script>
+
+</body>
+</html>

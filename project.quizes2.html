@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Notes</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            flex-direction: column; /* Updated to column layout */
+        }
+
+        /* Style for the filter form */
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            justify-content: center;
+            text-align: center;
+            display: none; /* Initially hide the container */
+        }
+
+        .pdf-card {
+            border: 2px solid blueviolet;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            display: block; /* Initially display all cards */
+        }
+
+        .pdf-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .pdf-details {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .pdf-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .pdf-button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .pdf-button:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 18px;
+            margin-top: 20px;
+            display: none; /* Initially hide the error message */
+        }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            select, button {
+                width: 90%;
+                margin: 10px 10px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .pdf-card {
+                width: calc(100% - 20px);
+                
+            }
+            .fuculty{
+                margin-top:20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <form id="filterForm">
+        <label for="faculty" class="faculty">Faculty:</label>
+        <select id="faculty" name="faculty" onchange="updateDepartments()">
+            <option value="">All</option>
+            <option value="Science">Science</option>
+            <option value="Humanities">Humanities</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <label for="department">Department:</label>
+        <select id="department" name="department">
+            <option value="">All</option>
+            <!-- Departments will be dynamically populated based on the selected faculty -->
+        </select>
+
+        <label for="year">Year:</label>
+        <select id="year" name="year">
+            <option value="">All</option>
+            <option value="1.1">1.1</option>
+            <option value="1.2">1.2</option>
+            <option value="2.1">2.1</option>
+            <option value="2.2">2.2</option>
+            <option value="3.1">3.1</option>
+            <option value="3.2">3.2</option>
+            <option value="4.1">4.1</option>
+            <option value="4.2">4.2</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <button type="button" onclick="applyFilters()">Get Notes</button>
+    </form>
+
+    <div class="error-message" id="errorMessage">No Question and Answers found for your selection</div>
+
+    <div class="container" id="pdfContainer">
+
+        <!-- Example PDF Cards -->
+    
+    </div>
+
+    <script>
+        // Mapping between faculties and their corresponding departments
+        const facultyDepartments = {
+            'Science': ['Computer Science', 'IT', 'Electrical', 'Mechanical'],
+            'Humanities': ['Criminology', 'Environment', 'Sociology'],
+            // Add more faculties and their departments as needed
+        };
+
+        function updateDepartments() {
+            const facultySelect = document.getElementById('faculty');
+            const departmentSelect = document.getElementById('department');
+
+            // Get the selected faculty
+            const selectedFaculty = facultySelect.value;
+
+            // Clear existing options in the department select
+            departmentSelect.innerHTML = '<option value="">All</option>';
+
+            // Populate department options based on the selected faculty
+            if (selectedFaculty in facultyDepartments) {
+                facultyDepartments[selectedFaculty].forEach(department => {
+                    const option = document.createElement('option');
+                    option.value = department;
+                    option.textContent = department;
+                    departmentSelect.appendChild(option);
+                });
+            }
+        }
+
+        function applyFilters() {
+            // Get selected values from the form
+            const faculty = document.getElementById('faculty').value;
+            const department = document.getElementById('department').value;
+            const year = document.getElementById('year').value;
+
+            // Get the container for PDF cards
+            const pdfContainer = document.getElementById('pdfContainer');
+
+            // Get the error message element
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Get all PDF cards
+            const pdfCards = pdfContainer.querySelectorAll('.pdf-card');
+
+            // Show or hide the container based on the filter criteria
+            pdfContainer.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            // Iterate through each PDF card and check if it matches the selected filters
+            pdfCards.forEach(card => {
+                const cardFaculty = card.getAttribute('data-faculty');
+                const cardDepartment = card.getAttribute('data-department');
+                const cardYear = card.getAttribute('data-year');
+
+                // Check if the card matches the selected filters
+                const facultyMatch = faculty === '' || faculty === cardFaculty;
+                const departmentMatch = department === '' || department === cardDepartment;
+                const yearMatch = year === '' || year === cardYear;
+
+                // Display or hide the container based on the filter criteria
+                if (facultyMatch && departmentMatch && yearMatch) {
+                    pdfContainer.style.display = 'flex';
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show the error message if no cards match the filters
+            if (pdfContainer.style.display === 'none') {
+                errorMessage.style.display = 'block';
+            }
+        }
+    </script>
+
+</body>
+</html>
